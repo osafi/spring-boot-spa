@@ -2,7 +2,6 @@ package ms.safi.spring.spa.devserver.http
 
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerMapping
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping

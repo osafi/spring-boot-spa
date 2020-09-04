@@ -12,9 +12,11 @@ class StartDevServerTask(private val executor: Executor) : Runnable {
     }
 
     override fun run() {
+        val directory = File("src/js")
+        println("running npm run start in directory: ${directory.absolutePath}")
         val processBuilder = ProcessBuilder()
                 .command("npm", "run", "start")
-                .directory(File(".").toPath().resolve("spring-spa-example/src/js").toFile())
+                .directory(directory)
                 .inheritIO()
         with(processBuilder.environment()) {
             put("BROWSER", "none")
