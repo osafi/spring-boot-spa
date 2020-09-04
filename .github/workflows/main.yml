@@ -12,7 +12,7 @@ jobs:
         with:
           java-version: 11
       - name: Publish package
-        run: cd spring-boot-starter-spa && gradle publish
+        run: cd spring-boot-starter-spa && gradle publish --debug
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
