@@ -32,6 +32,7 @@ publishing {
     }
     publications {
         create<MavenPublication>("default") {
+            artifactId = "spring-boot-starter-spa"
             from(components["java"])
         }
     }
