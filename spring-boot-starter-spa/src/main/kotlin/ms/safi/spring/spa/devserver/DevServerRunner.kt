@@ -1,6 +1,7 @@
 package ms.safi.spring.spa.devserver
 
 import java.io.File
+import java.lang.ProcessBuilder.Redirect
 import java.util.concurrent.Executor
 import javax.annotation.PostConstruct
 
@@ -17,10 +18,9 @@ class DevServerRunner(private val executor: Executor) : Runnable {
         val processBuilder = ProcessBuilder()
                 .command("npm", "run", "start")
                 .directory(directory)
-                .inheritIO()
+                .redirectOutput(Redirect.INHERIT)
         with(processBuilder.environment()) {
             put("BROWSER", "none")
-            put("CI", "true") // Required to prevent WebpackDevServer from exiting as soon as stdin ends. Better way to do this?
         }
 
         val process = processBuilder.start()
