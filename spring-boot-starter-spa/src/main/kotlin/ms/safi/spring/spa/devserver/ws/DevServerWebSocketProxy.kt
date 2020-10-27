@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.devserver.ws
 
+import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
@@ -16,8 +17,10 @@ class DevServerWebSocketProxy : AbstractWebSocketHandler() {
             StandardWebSocketClient()
                     .doHandshake(
                             object : AbstractWebSocketHandler() {
-                                override fun handleMessage(serverSession: WebSocketSession, message: WebSocketMessage<*>) {
-                                    clientSession.sendMessage(message)
+                                override fun handleMessage(`_`: WebSocketSession, message: WebSocketMessage<*>) {
+                                    if (clientSession.isOpen) {
+                                        clientSession.sendMessage(message)
+                                    }
                                 }
                             },
                             "ws://localhost:3000/sockjs-node"
@@ -27,5 +30,10 @@ class DevServerWebSocketProxy : AbstractWebSocketHandler() {
 
     override fun handleMessage(clientSession: WebSocketSession, message: WebSocketMessage<*>) {
         serverSocketSessions.getValue(clientSession.id).sendMessage(message)
+    }
+
+    override fun afterConnectionClosed(clientSession: WebSocketSession, status: CloseStatus) {
+        serverSocketSessions.getValue(clientSession.id).close(status)
+        serverSocketSessions.remove(clientSession.id)
     }
 }

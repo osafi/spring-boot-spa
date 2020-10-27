@@ -20,9 +20,11 @@ class StartDevServerTask(private val executor: Executor) : Runnable {
                 .inheritIO()
         with(processBuilder.environment()) {
             put("BROWSER", "none")
+            put("CI", "true") // Required to prevent WebpackDevServer from exiting as soon as stdin ends. Better way to do this?
         }
 
         val process = processBuilder.start()
+        Runtime.getRuntime().addShutdownHook(Thread(process::destroy))
         process.waitFor()
     }
 }
