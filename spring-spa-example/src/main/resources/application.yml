@@ -7,3 +7,6 @@ management:
 logging:
   level:
     org.springframework: INFO
+
+spa:
+  enabled: true

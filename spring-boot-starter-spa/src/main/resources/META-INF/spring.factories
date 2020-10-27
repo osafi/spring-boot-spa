@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ms.safi.spring.spa.devserver.DevServerRunnerAutoConfiguration,\
+ms.safi.spring.spa.devserver.proxy.DevServerProxyAutoConfiguration

@@ -4,7 +4,7 @@ import java.io.File
 import java.util.concurrent.Executor
 import javax.annotation.PostConstruct
 
-class StartDevServerTask(private val executor: Executor) : Runnable {
+class DevServerRunner(private val executor: Executor) : Runnable {
 
     @PostConstruct
     fun startServer() {

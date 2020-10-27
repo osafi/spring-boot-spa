@@ -1,4 +1,4 @@
-package ms.safi.spring.spa.devserver.http
+package ms.safi.spring.spa.devserver.proxy.http
 
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order

@@ -1,4 +1,4 @@
-package ms.safi.spring.spa.devserver.ws
+package ms.safi.spring.spa.devserver.proxy.ws
 
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketMessage
