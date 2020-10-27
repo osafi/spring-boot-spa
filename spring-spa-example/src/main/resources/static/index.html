@@ -3,10 +3,18 @@
 <head>
     <meta charset="utf-8"/>
     <title>Test Page</title>
+
+    <script>
+        window.onload = function(e){
+            document.getElementById("url").textContent = window.location
+        }
+    </script>
 </head>
 <body>
 <div id="root">
     <h1>Test static index.html page</h1>
+    <h2 id="url"></h2>
+    <img src="logo512.png" width="256" height="256"/>
 </div>
 </body>
 </html>

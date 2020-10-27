@@ -13,8 +13,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
-@Configuration
-@ConditionalOnProperty(name = ["spa.devserver.proxy.enabled"])
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(name = ["spa.devserver.proxy.enabled"], havingValue = "true", matchIfMissing = false)
 @ConditionalOnClass(WebSocketConfigurer::class)
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)

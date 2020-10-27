@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.task.SimpleAsyncTaskExecutor
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(name = ["spa.devserver.runner.enabled"])
+@ConditionalOnProperty(name = ["spa.devserver.runner.enabled"], havingValue = "true", matchIfMissing = false)
 class DevServerRunnerAutoConfiguration {
     @Bean
     fun devServerRunnerTask() = DevServerRunner(SimpleAsyncTaskExecutor("dev-server"))
