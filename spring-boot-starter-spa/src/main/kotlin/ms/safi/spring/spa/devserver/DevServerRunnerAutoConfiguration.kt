@@ -8,7 +8,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor
 
 @Configuration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(name = ["spa.enabled"])
+@ConditionalOnProperty(name = ["spa.devserver.runner.enabled"])
 class DevServerRunnerAutoConfiguration {
     @Bean
     fun devServerRunnerTask() = DevServerRunner(SimpleAsyncTaskExecutor("dev-server"))

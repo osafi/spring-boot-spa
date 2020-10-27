@@ -25,13 +25,13 @@ class DevServerProxyServletFilter(
     }
 
     private fun shouldBeHandledBySpring(request: HttpServletRequest): Boolean {
-        val (handlerMappingName, handlerMapping) = handlerMappings.entries.find { it.value.getHandler(request) != null }
+        val (handlerMappingName) = handlerMappings.entries.find { it.value.getHandler(request) != null }
                 ?: return false
 
-        val isResourceHandlerMapping =
-                handlerMapping is SimpleUrlHandlerMapping && handlerMappingName == "resourceHandlerMapping"
+        val isResourceHandlerMapping = handlerMappingName == "resourceHandlerMapping"
+        val isWelcomePageHandlerMapping = handlerMappingName == "welcomePageHandlerMapping"
 
-        return !isResourceHandlerMapping
+        return !(isResourceHandlerMapping || isWelcomePageHandlerMapping)
     }
 }
 

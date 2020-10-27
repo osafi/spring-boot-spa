@@ -14,7 +14,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @Configuration
-@ConditionalOnProperty(name = ["spa.enabled"])
+@ConditionalOnProperty(name = ["spa.devserver.proxy.enabled"])
 @ConditionalOnClass(WebSocketConfigurer::class)
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)

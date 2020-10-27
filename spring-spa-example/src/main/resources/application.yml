@@ -9,4 +9,8 @@ logging:
     org.springframework: INFO
 
 spa:
-  enabled: true
+  devserver:
+    runner:
+      enabled: true
+    proxy:
+      enabled: true
