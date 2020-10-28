@@ -8,6 +8,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     kotlin("jvm") version "1.4.0"
     kotlin("plugin.spring") version "1.4.0"
+    kotlin("kapt") version "1.4.0"
 }
 
 group = "ms.safi.spring"
@@ -39,12 +40,17 @@ publishing {
 }
 
 dependencies {
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.withType<Test> {
