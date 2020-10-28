@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 class SampleController {
     @GetMapping("/api/testing")
     fun testing(): Response {
-        println("in SampleController")
         return Response(thing = "hello")
     }
 

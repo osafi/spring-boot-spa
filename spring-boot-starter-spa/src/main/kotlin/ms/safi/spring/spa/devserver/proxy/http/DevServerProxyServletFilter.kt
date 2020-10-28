@@ -1,11 +1,9 @@
 package ms.safi.spring.spa.devserver.proxy.http
 
-import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerMapping
-import java.lang.RuntimeException
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.servlet.FilterChain
@@ -16,9 +14,6 @@ import javax.servlet.http.HttpServletResponse
 class DevServerProxyServletFilter(
         private val handlerMappings: Map<String, HandlerMapping>
 ) : OncePerRequestFilter() {
-    companion object {
-        private val log = LoggerFactory.getLogger(DevServerProxyServletFilter::class.java)
-    }
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         if (shouldBeHandledBySpring(request)) {
@@ -43,7 +38,7 @@ class DevServerProxyServletFilter(
         val path = req.requestURI
         val queryParams = req.queryString?.let { "?$it" } ?: ""
         val url = "$baseUrl$path$queryParams"
-        log.debug("[${req.method}] $url")
+        logger.debug("[${req.method}] $url")
 
         try {
             val conn = URL(url).openConnection() as HttpURLConnection
