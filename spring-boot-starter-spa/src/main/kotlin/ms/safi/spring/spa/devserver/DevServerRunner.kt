@@ -1,13 +1,15 @@
 package ms.safi.spring.spa.devserver
 
-import ms.safi.spring.spa.devserver.DevServerConfigurationProperties.RunnerProperties
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.lang.ProcessBuilder.Redirect
 import java.util.concurrent.Executor
 import javax.annotation.PostConstruct
 
-class DevServerRunner(private val executor: Executor, private val properties: RunnerProperties) : Runnable {
+class DevServerRunner(
+        private val executor: Executor,
+        private val properties: DevServerConfigurationProperties
+) : Runnable {
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerRunner::class.java)
     }
@@ -18,8 +20,12 @@ class DevServerRunner(private val executor: Executor, private val properties: Ru
     }
 
     override fun run() {
-        val workingDirectory = File(properties.workingDirectory)
-        val command = listOf(properties.packageManagerCommand.name.toLowerCase(), "run", properties.scriptName)
+        val workingDirectory = File(properties.runner.workingDirectory)
+        val pkgManagerCommand = properties.runner.packageManagerCommand.name.toLowerCase()
+        val script = properties.runner.scriptName
+        val port = properties.port
+
+        val command = listOf(pkgManagerCommand, "run", script)
         logger.info("running '${command.joinToString(" ")}' in directory '${workingDirectory.absolutePath}'")
         val processBuilder = ProcessBuilder()
                 .command(command)
@@ -27,6 +33,7 @@ class DevServerRunner(private val executor: Executor, private val properties: Ru
                 .redirectOutput(Redirect.INHERIT)
         with(processBuilder.environment()) {
             put("BROWSER", "none")
+            put("PORT", port.toString())
         }
 
         val process = processBuilder.start()

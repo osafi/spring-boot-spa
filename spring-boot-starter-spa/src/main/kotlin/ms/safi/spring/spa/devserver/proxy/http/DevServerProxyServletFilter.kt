@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.devserver.proxy.http
 
+import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.web.filter.OncePerRequestFilter
@@ -12,8 +13,10 @@ import javax.servlet.http.HttpServletResponse
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class DevServerProxyServletFilter(
-        private val handlerMappings: Map<String, HandlerMapping>
+        private val handlerMappings: Map<String, HandlerMapping>,
+        properties: DevServerConfigurationProperties
 ) : OncePerRequestFilter() {
+    private val devServerBaseUrl = "http://localhost:${properties.port}"
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         if (shouldBeHandledBySpring(request)) {
@@ -34,10 +37,9 @@ class DevServerProxyServletFilter(
     }
 
     private fun forwardToWebpackDevServer(req: HttpServletRequest, resp: HttpServletResponse) {
-        val baseUrl = "http://localhost:3000"
         val path = req.requestURI
         val queryParams = req.queryString?.let { "?$it" } ?: ""
-        val url = "$baseUrl$path$queryParams"
+        val url = "$devServerBaseUrl$path$queryParams"
         logger.debug("[${req.method}] $url")
 
         try {

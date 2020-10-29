@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.devserver.proxy
 
+import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
 import ms.safi.spring.spa.devserver.proxy.http.DevServerProxyServletFilter
 import ms.safi.spring.spa.devserver.proxy.ws.DevServerWebSocketProxy
 import org.slf4j.LoggerFactory
@@ -19,7 +20,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @ConditionalOnClass(WebSocketConfigurer::class)
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)
-class DevServerProxyAutoConfiguration : WebSocketConfigurer {
+class DevServerProxyAutoConfiguration(private val properties: DevServerConfigurationProperties) : WebSocketConfigurer {
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerProxyAutoConfiguration::class.java)
     }
@@ -27,11 +28,11 @@ class DevServerProxyAutoConfiguration : WebSocketConfigurer {
     @Bean
     fun devServerProxyServletFilter(handlerMappings: Map<String, HandlerMapping>): DevServerProxyServletFilter {
         logger.info("Dev server HTTP proxy filter registered")
-        return DevServerProxyServletFilter(handlerMappings)
+        return DevServerProxyServletFilter(handlerMappings = handlerMappings, properties = properties)
     }
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(DevServerWebSocketProxy(), "/sockjs-node")
+        registry.addHandler(DevServerWebSocketProxy(properties), "/sockjs-node")
         logger.info("Dev server WS proxy registered on '/sockjs-node'")
     }
 }

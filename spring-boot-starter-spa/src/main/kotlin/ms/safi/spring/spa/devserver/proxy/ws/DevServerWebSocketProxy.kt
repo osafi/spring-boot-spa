@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.devserver.proxy.ws
 
+import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketMessage
 import org.springframework.web.socket.WebSocketSession
@@ -9,7 +10,9 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 
-class DevServerWebSocketProxy : AbstractWebSocketHandler() {
+class DevServerWebSocketProxy(properties: DevServerConfigurationProperties) : AbstractWebSocketHandler() {
+    private val devServerBaseUrl = "ws://localhost:${properties.port}"
+
     private val serverSocketSessions = ConcurrentHashMap<String, WebSocketSession>()
 
     override fun afterConnectionEstablished(clientSession: WebSocketSession) {
@@ -23,7 +26,7 @@ class DevServerWebSocketProxy : AbstractWebSocketHandler() {
                                     }
                                 }
                             },
-                            "ws://localhost:3000/sockjs-node"
+                            "$devServerBaseUrl/sockjs-node"
                     )[1000, TimeUnit.MILLISECONDS]
         }
     }

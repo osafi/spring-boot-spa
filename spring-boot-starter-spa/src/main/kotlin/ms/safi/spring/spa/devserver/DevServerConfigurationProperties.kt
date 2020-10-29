@@ -7,7 +7,8 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConfigurationProperties("spa.devserver")
 data class DevServerConfigurationProperties(
         val runner: RunnerProperties,
-        val proxy: ProxyProperties
+        val proxy: ProxyProperties,
+        val port: Int = 3000
 ) {
     data class RunnerProperties(
             val enabled: Boolean = false,
