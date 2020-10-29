@@ -13,5 +13,6 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor
 @EnableConfigurationProperties(DevServerConfigurationProperties::class)
 class DevServerRunnerAutoConfiguration {
     @Bean
-    fun devServerRunnerTask() = DevServerRunner(SimpleAsyncTaskExecutor("dev-server"))
+    fun devServerRunnerTask(properties: DevServerConfigurationProperties) =
+            DevServerRunner(executor = SimpleAsyncTaskExecutor("dev-server"), properties = properties.runner)
 }

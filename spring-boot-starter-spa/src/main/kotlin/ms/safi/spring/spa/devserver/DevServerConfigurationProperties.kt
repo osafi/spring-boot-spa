@@ -10,8 +10,14 @@ data class DevServerConfigurationProperties(
         val proxy: ProxyProperties
 ) {
     data class RunnerProperties(
-            val enabled: Boolean = false
+            val enabled: Boolean = false,
+            val packageManagerCommand: PackageManager = PackageManager.NPM,
+            val scriptName: String = "start",
+            val workingDirectory: String = "src/js"
     )
+    enum class PackageManager {
+        NPM, YARN
+    }
     data class ProxyProperties(
             val enabled: Boolean = false
     )
