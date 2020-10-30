@@ -11,23 +11,22 @@ import java.util.concurrent.TimeUnit
 
 
 class DevServerWebSocketProxy(properties: DevServerConfigurationProperties) : AbstractWebSocketHandler() {
-    private val devServerBaseUrl = "ws://localhost:${properties.port}"
+    private val devServerWsUrl = "ws://localhost:${properties.port}/sockjs-node"
 
     private val serverSocketSessions = ConcurrentHashMap<String, WebSocketSession>()
 
     override fun afterConnectionEstablished(clientSession: WebSocketSession) {
         serverSocketSessions.computeIfAbsent(clientSession.id) {
             StandardWebSocketClient()
-                    .doHandshake(
-                            object : AbstractWebSocketHandler() {
-                                override fun handleMessage(`_`: WebSocketSession, message: WebSocketMessage<*>) {
-                                    if (clientSession.isOpen) {
-                                        clientSession.sendMessage(message)
-                                    }
-                                }
-                            },
-                            "$devServerBaseUrl/sockjs-node"
-                    )[1000, TimeUnit.MILLISECONDS]
+                    .doHandshake(MessageForwardingSocketHandler(clientSession), devServerWsUrl)[1000, TimeUnit.MILLISECONDS]
+        }
+    }
+
+    inner class MessageForwardingSocketHandler(private val clientSession: WebSocketSession) : AbstractWebSocketHandler() {
+        override fun handleMessage(`_`: WebSocketSession, message: WebSocketMessage<*>) {
+            if (clientSession.isOpen) {
+                clientSession.sendMessage(message)
+            }
         }
     }
 

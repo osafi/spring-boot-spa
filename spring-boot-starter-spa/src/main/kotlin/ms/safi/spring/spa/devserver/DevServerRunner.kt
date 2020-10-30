@@ -6,6 +6,7 @@ import java.lang.ProcessBuilder.Redirect
 import java.util.concurrent.Executor
 import javax.annotation.PostConstruct
 
+// Should this be done via a custom gradle Exec task instead of in app process? https://stackoverflow.com/a/25308762
 class DevServerRunner(
         private val executor: Executor,
         private val properties: DevServerConfigurationProperties
