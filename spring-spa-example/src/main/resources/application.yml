@@ -12,6 +12,6 @@ logging:
 spa:
   devserver:
     runner:
-      enabled: true
+      enabled: false
     proxy:
       enabled: true

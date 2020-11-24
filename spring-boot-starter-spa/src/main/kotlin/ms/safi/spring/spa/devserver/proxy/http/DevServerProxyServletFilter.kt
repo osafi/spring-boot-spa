@@ -27,13 +27,9 @@ class DevServerProxyServletFilter(
     }
 
     private fun shouldBeHandledBySpring(request: HttpServletRequest): Boolean {
-        val (handlerMappingName) = handlerMappings.entries.find { it.value.getHandler(request) != null }
-                ?: return false
-
-        val isResourceHandlerMapping = handlerMappingName == "resourceHandlerMapping"
-        val isWelcomePageHandlerMapping = handlerMappingName == "welcomePageHandlerMapping"
-
-        return !(isResourceHandlerMapping || isWelcomePageHandlerMapping)
+        return handlerMappings.entries
+                .filter { (key) -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
+                .any { it.value.getHandler(request) != null }
     }
 
     private fun forwardToWebpackDevServer(req: HttpServletRequest, resp: HttpServletResponse) {

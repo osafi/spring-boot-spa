@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.run.BootRun
+import kotlin.concurrent.thread
 
 plugins {
     id("org.springframework.boot") version "2.3.3.RELEASE"
@@ -41,4 +43,58 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
     }
+}
+
+abstract class RunSpaDevServerTask : DefaultTask() {
+
+    @InputDirectory
+    var spaRoot: File = project.file("${project.projectDir}/src/js")
+
+    @TaskAction
+    fun greet() {
+        val workingDirectory = spaRoot
+        val pkgManagerCommand = "npm"
+        val script = "start"
+        val port = 3000
+
+        val command = listOf(pkgManagerCommand, "run", script)
+        logger.warn("running '${command.joinToString(" ")}' in directory '${workingDirectory.absolutePath}'")
+        val processBuilder = ProcessBuilder()
+                .command(command)
+                .redirectErrorStream(true)
+                .directory(workingDirectory)
+        with(processBuilder.environment()) {
+            put("BROWSER", "none")
+            put("PORT", port.toString())
+        }
+
+        val process = processBuilder.start()
+
+        val inputReader = process.inputStream.bufferedReader()
+        var isReady = false
+        while (!isReady) {
+            val line = inputReader.readLine() ?: break
+            if (line.contains("Compiled successfully!")) {
+                logger.warn("process in ready state")
+                isReady = true
+            }
+        }
+
+        if (isReady) {
+            logger.warn("moving output capture to daemon thread")
+            thread(start = true, isDaemon = true) {
+                inputReader.forEachLine(logger::warn)
+            }
+        } else {
+            process.waitFor()
+            val exitCode = process.exitValue()
+            throw GradleException("The command '${command.joinToString(" ")}' exited before reaching ready state - exit code: $exitCode")
+        }
+    }
+}
+
+val spaDevServerTask = tasks.register<RunSpaDevServerTask>("spaDevServer")
+
+tasks.withType<BootRun> {
+    dependsOn(spaDevServerTask)
 }

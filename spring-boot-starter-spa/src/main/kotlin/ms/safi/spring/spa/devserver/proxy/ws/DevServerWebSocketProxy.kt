@@ -23,7 +23,7 @@ class DevServerWebSocketProxy(properties: DevServerConfigurationProperties) : Ab
     }
 
     inner class MessageForwardingSocketHandler(private val clientSession: WebSocketSession) : AbstractWebSocketHandler() {
-        override fun handleMessage(`_`: WebSocketSession, message: WebSocketMessage<*>) {
+        override fun handleMessage(session: WebSocketSession, message: WebSocketMessage<*>) {
             if (clientSession.isOpen) {
                 clientSession.sendMessage(message)
             }
