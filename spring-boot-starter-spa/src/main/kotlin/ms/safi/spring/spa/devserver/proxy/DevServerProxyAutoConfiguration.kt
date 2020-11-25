@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.HandlerMapping
@@ -20,6 +21,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @ConditionalOnClass(WebSocketConfigurer::class)
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)
+@EnableConfigurationProperties(DevServerConfigurationProperties::class)
 class DevServerProxyAutoConfiguration(private val properties: DevServerConfigurationProperties) : WebSocketConfigurer {
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerProxyAutoConfiguration::class.java)

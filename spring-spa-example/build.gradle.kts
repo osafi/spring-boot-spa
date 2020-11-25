@@ -46,18 +46,17 @@ tasks.withType<KotlinCompile> {
 }
 
 abstract class RunSpaDevServerTask : DefaultTask() {
-
+    var packageManagerCommand: String = "npm"
+    var scriptName: String = "start"
     @InputDirectory
     var spaRoot: File = project.file("${project.projectDir}/src/js")
+    var readyText: String = "Compiled successfully!"
 
     @TaskAction
-    fun greet() {
+    fun run() {
         val workingDirectory = spaRoot
-        val pkgManagerCommand = "npm"
-        val script = "start"
         val port = 3000
-
-        val command = listOf(pkgManagerCommand, "run", script)
+        val command = listOf(packageManagerCommand, "run", scriptName)
         logger.warn("running '${command.joinToString(" ")}' in directory '${workingDirectory.absolutePath}'")
         val processBuilder = ProcessBuilder()
                 .command(command)
@@ -74,21 +73,24 @@ abstract class RunSpaDevServerTask : DefaultTask() {
         var isReady = false
         while (!isReady) {
             val line = inputReader.readLine() ?: break
-            if (line.contains("Compiled successfully!")) {
+            if (line.contains(readyText)) {
                 logger.warn("process in ready state")
                 isReady = true
             }
         }
 
-        if (isReady) {
-            logger.warn("moving output capture to daemon thread")
-            thread(start = true, isDaemon = true) {
-                inputReader.forEachLine(logger::warn)
-            }
-        } else {
+        if (!isReady) {
             process.waitFor()
             val exitCode = process.exitValue()
             throw GradleException("The command '${command.joinToString(" ")}' exited before reaching ready state - exit code: $exitCode")
+        }
+
+        val thisTaskIsLastInTaskGraph = project.gradle.taskGraph.allTasks.last() == this
+        if (thisTaskIsLastInTaskGraph) {
+            inputReader.forEachLine(logger::warn)
+        } else {
+            logger.warn("moving output capture to daemon thread")
+            thread(start = true, isDaemon = true) { inputReader.forEachLine(logger::warn) }
         }
     }
 }
