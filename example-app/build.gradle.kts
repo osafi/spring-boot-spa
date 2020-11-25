@@ -3,19 +3,15 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 import kotlin.concurrent.thread
 
 plugins {
-    id("org.springframework.boot") version "2.3.3.RELEASE"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    kotlin("jvm") version "1.4.0"
-    kotlin("plugin.spring") version "1.4.0"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    kotlin("jvm")
+    kotlin("plugin.spring")
 }
 
 group = "ms.safi.spring"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation(kotlin("reflect"))

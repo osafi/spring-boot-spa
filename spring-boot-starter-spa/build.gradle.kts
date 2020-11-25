@@ -4,11 +4,11 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     `maven-publish`
-    id("org.springframework.boot") version "2.3.3.RELEASE"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    kotlin("jvm") version "1.4.0"
-    kotlin("plugin.spring") version "1.4.0"
-    kotlin("kapt") version "1.4.0"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    kotlin("jvm")
+    kotlin("plugin.spring")
+    kotlin("kapt")
 }
 
 group = "ms.safi.spring"

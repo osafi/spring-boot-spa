@@ -1,5 +1,6 @@
-rootProject.name = "spring-boot-starter-spa-project"
+rootProject.name = "spring-boot-spa"
 
+include("spa-dev-server-plugin")
 include("spring-boot-starter-spa")
-include("spring-spa-example")
+include("example-app")
 
