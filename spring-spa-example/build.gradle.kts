@@ -48,7 +48,6 @@ tasks.withType<KotlinCompile> {
 abstract class RunSpaDevServerTask : DefaultTask() {
     var packageManagerCommand: String = "npm"
     var scriptName: String = "start"
-    @InputDirectory
     var spaRoot: File = project.file("${project.projectDir}/src/js")
     var readyText: String = "Compiled successfully!"
 
