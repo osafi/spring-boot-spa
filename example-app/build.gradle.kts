@@ -1,12 +1,13 @@
+import com.github.psxpaul.task.ExecFork
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
-import kotlin.concurrent.thread
 
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("plugin.spring")
+    id("com.github.hesch.execfork") version "0.1.15"
 }
 
 group = "ms.safi.spring"
@@ -41,56 +42,18 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-abstract class RunSpaDevServerTask : DefaultTask() {
-    var packageManagerCommand: String = "npm"
-    var scriptName: String = "start"
-    var spaRoot: File = project.file("${project.projectDir}/src/js")
-    var readyText: String = "Compiled successfully!"
-
-    @TaskAction
-    fun run() {
-        val workingDirectory = spaRoot
-        val port = 3000
-        val command = listOf(packageManagerCommand, "run", scriptName)
-        logger.warn("running '${command.joinToString(" ")}' in directory '${workingDirectory.absolutePath}'")
-        val processBuilder = ProcessBuilder()
-                .command(command)
-                .redirectErrorStream(true)
-                .directory(workingDirectory)
-        with(processBuilder.environment()) {
-            put("BROWSER", "none")
-            put("PORT", port.toString())
-        }
-
-        val process = processBuilder.start()
-
-        val inputReader = process.inputStream.bufferedReader()
-        var isReady = false
-        while (!isReady) {
-            val line = inputReader.readLine() ?: break
-            if (line.contains(readyText)) {
-                logger.warn("process in ready state")
-                isReady = true
-            }
-        }
-
-        if (!isReady) {
-            process.waitFor()
-            val exitCode = process.exitValue()
-            throw GradleException("The command '${command.joinToString(" ")}' exited before reaching ready state - exit code: $exitCode")
-        }
-
-        val thisTaskIsLastInTaskGraph = project.gradle.taskGraph.allTasks.last() == this
-        if (thisTaskIsLastInTaskGraph) {
-            inputReader.forEachLine(logger::warn)
-        } else {
-            logger.warn("moving output capture to daemon thread")
-            thread(start = true, isDaemon = true) { inputReader.forEachLine(logger::warn) }
-        }
-    }
+val spaDevServerTask = tasks.register<ExecFork>("spaDevServer") {
+    val port = 3000 // findOpenPort()
+    executable = "npm"
+    args = mutableListOf("run", "start")
+    workingDir = file("$projectDir/src/js")
+    waitForOutput = "Compiled successfully!"
+    waitForPort = port
+    environment = mapOf(
+            "BROWSER" to "none",
+            "PORT" to port
+    )
 }
-
-val spaDevServerTask = tasks.register<RunSpaDevServerTask>("spaDevServer")
 
 tasks.withType<BootRun> {
     dependsOn(spaDevServerTask)
