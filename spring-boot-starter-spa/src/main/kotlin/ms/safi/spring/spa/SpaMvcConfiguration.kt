@@ -1,7 +1,6 @@
 package ms.safi.spring.spa
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.autoconfigure.web.WebProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
@@ -11,8 +10,7 @@ import org.springframework.web.servlet.resource.ResourceResolverChain
 import javax.servlet.http.HttpServletRequest
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(value = [ResourceProperties::class])
-class SpaMvcConfiguration(val resourceProperties: ResourceProperties) : WebMvcConfigurer {
+class SpaMvcConfiguration(val resourceProperties: WebProperties.Resources) : WebMvcConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/**")

@@ -1,10 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     `maven-publish`
-    id("org.springframework.boot")
     id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("plugin.spring")
@@ -39,9 +37,16 @@ publishing {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom(SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+
 dependencies {
     implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 
@@ -63,11 +68,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
-
-val jar: Jar by tasks
-val bootJar: BootJar by tasks
-val bootRun: BootRun by tasks
-
-bootRun.enabled = false
-bootJar.enabled = false
-jar.enabled = true
