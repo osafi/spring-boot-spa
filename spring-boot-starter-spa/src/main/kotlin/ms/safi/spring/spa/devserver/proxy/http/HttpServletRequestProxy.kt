@@ -17,7 +17,7 @@ class HttpServletRequestProxy(private val targetUrl: String) {
         val path = req.requestURI
         val queryParams = req.queryString?.let { "?$it" } ?: ""
         val url = "$targetUrl$path$queryParams"
-        logger.debug("[${req.method}] $url")
+        logger.debug("[${req.method}] $path -> $url")
 
         try {
             val conn = URL(url).openConnection() as HttpURLConnection
