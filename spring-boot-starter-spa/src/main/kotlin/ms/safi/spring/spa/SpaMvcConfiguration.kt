@@ -14,20 +14,20 @@ class SpaMvcConfiguration(val resourceProperties: WebProperties.Resources) : Web
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations(*resourceProperties.staticLocations)
-                .resourceChain(resourceProperties.chain.isCache)
-                .addResolver(FallbackPathResourceResolver())
+            .addResourceLocations(*resourceProperties.staticLocations)
+            .resourceChain(resourceProperties.chain.isCache)
+            .addResolver(FallbackPathResourceResolver())
     }
 
     private class FallbackPathResourceResolver : PathResourceResolver() {
         override fun resolveResource(
-                request: HttpServletRequest?,
-                requestPath: String,
-                locations: MutableList<out Resource>,
-                chain: ResourceResolverChain
+            request: HttpServletRequest?,
+            requestPath: String,
+            locations: MutableList<out Resource>,
+            chain: ResourceResolverChain
         ): Resource? {
             return super.resolveResource(request, requestPath, locations, chain)
-                    ?: super.resolveResource(request, "/index.html", locations, chain)
+                ?: super.resolveResource(request, "/index.html", locations, chain)
         }
     }
 }

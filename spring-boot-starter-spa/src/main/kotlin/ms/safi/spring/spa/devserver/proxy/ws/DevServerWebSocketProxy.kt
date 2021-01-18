@@ -18,11 +18,12 @@ class DevServerWebSocketProxy(properties: DevServerProxyConfigurationProperties)
     override fun afterConnectionEstablished(clientSession: WebSocketSession) {
         serverSocketSessions.computeIfAbsent(clientSession.id) {
             StandardWebSocketClient()
-                    .doHandshake(MessageForwardingSocketHandler(clientSession), devServerWsUrl)[1000, TimeUnit.MILLISECONDS]
+                .doHandshake(MessageForwardingSocketHandler(clientSession), devServerWsUrl)[1000, TimeUnit.MILLISECONDS]
         }
     }
 
-    inner class MessageForwardingSocketHandler(private val clientSession: WebSocketSession) : AbstractWebSocketHandler() {
+    inner class MessageForwardingSocketHandler(private val clientSession: WebSocketSession) :
+        AbstractWebSocketHandler() {
         override fun handleMessage(session: WebSocketSession, message: WebSocketMessage<*>) {
             if (clientSession.isOpen) {
                 clientSession.sendMessage(message)

@@ -21,7 +21,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)
 @EnableConfigurationProperties(DevServerProxyConfigurationProperties::class)
-class DevServerProxyAutoConfiguration(private val properties: DevServerProxyConfigurationProperties) : WebSocketConfigurer {
+class DevServerProxyAutoConfiguration(private val properties: DevServerProxyConfigurationProperties) :
+    WebSocketConfigurer {
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerProxyAutoConfiguration::class.java)
     }
