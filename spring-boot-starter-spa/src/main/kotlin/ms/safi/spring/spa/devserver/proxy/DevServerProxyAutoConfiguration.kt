@@ -1,6 +1,5 @@
 package ms.safi.spring.spa.devserver.proxy
 
-import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
 import ms.safi.spring.spa.devserver.proxy.http.DevServerProxyServletFilter
 import ms.safi.spring.spa.devserver.proxy.ws.DevServerWebSocketProxy
 import org.slf4j.LoggerFactory
@@ -21,8 +20,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @ConditionalOnClass(WebSocketConfigurer::class)
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)
-@EnableConfigurationProperties(DevServerConfigurationProperties::class)
-class DevServerProxyAutoConfiguration(private val properties: DevServerConfigurationProperties) : WebSocketConfigurer {
+@EnableConfigurationProperties(DevServerProxyConfigurationProperties::class)
+class DevServerProxyAutoConfiguration(private val properties: DevServerProxyConfigurationProperties) : WebSocketConfigurer {
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerProxyAutoConfiguration::class.java)
     }

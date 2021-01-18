@@ -47,6 +47,7 @@ val spaDevServerTask = tasks.register<ExecFork>("spaDevServer") {
     executable = "npm"
     args = mutableListOf("run", "start")
     workingDir = file("$projectDir/src/js")
+    timeout = 300
     waitForOutput = "Compiled successfully!"
     waitForPort = port
     environment = mapOf(

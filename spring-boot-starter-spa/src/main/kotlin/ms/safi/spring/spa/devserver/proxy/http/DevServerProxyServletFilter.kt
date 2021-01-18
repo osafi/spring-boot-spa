@@ -1,6 +1,6 @@
 package ms.safi.spring.spa.devserver.proxy.http
 
-import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
+import ms.safi.spring.spa.devserver.proxy.DevServerProxyConfigurationProperties
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.web.filter.OncePerRequestFilter
@@ -13,23 +13,24 @@ import javax.servlet.http.HttpServletResponse
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class DevServerProxyServletFilter(
-        private val handlerMappings: Map<String, HandlerMapping>,
-        properties: DevServerConfigurationProperties
+    private val handlerMappings: Map<String, HandlerMapping>,
+    properties: DevServerProxyConfigurationProperties
 ) : OncePerRequestFilter() {
     private val devServerBaseUrl = "http://localhost:${properties.port}"
 
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        if (shouldBeHandledBySpring(request)) {
-            filterChain.doFilter(request, response)
-        } else {
-            forwardToWebpackDevServer(request, response)
-        }
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return handlerMappings
+            .entries
+            .filter { (key) -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
+            .any { it.value.getHandler(request) != null }
     }
 
-    private fun shouldBeHandledBySpring(request: HttpServletRequest): Boolean {
-        return handlerMappings.entries
-                .filter { (key) -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
-                .any { it.value.getHandler(request) != null }
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        forwardToWebpackDevServer(request, response)
     }
 
     private fun forwardToWebpackDevServer(req: HttpServletRequest, resp: HttpServletResponse) {
@@ -56,12 +57,12 @@ class DevServerProxyServletFilter(
             resp.status = conn.responseCode
 
             conn.headerFields
-                    .filterKeys { it != null && it != "Transfer-Encoding" }
-                    .forEach { (headerName, headerValues) ->
-                        headerValues.forEach { headerValue ->
-                            resp.setHeader(headerName, headerValue)
-                        }
+                .filterKeys { it != null && it != "Transfer-Encoding" }
+                .forEach { (headerName, headerValues) ->
+                    headerValues.forEach { headerValue ->
+                        resp.setHeader(headerName, headerValue)
                     }
+                }
 
             conn.inputStream.copyTo(resp.outputStream)
 

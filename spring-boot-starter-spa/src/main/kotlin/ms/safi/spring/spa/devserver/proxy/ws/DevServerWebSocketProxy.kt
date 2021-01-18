@@ -1,6 +1,6 @@
 package ms.safi.spring.spa.devserver.proxy.ws
 
-import ms.safi.spring.spa.devserver.DevServerConfigurationProperties
+import ms.safi.spring.spa.devserver.proxy.DevServerProxyConfigurationProperties
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.WebSocketMessage
 import org.springframework.web.socket.WebSocketSession
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 
-class DevServerWebSocketProxy(properties: DevServerConfigurationProperties) : AbstractWebSocketHandler() {
+class DevServerWebSocketProxy(properties: DevServerProxyConfigurationProperties) : AbstractWebSocketHandler() {
     private val devServerWsUrl = "ws://localhost:${properties.port}/sockjs-node"
 
     private val serverSocketSessions = ConcurrentHashMap<String, WebSocketSession>()
