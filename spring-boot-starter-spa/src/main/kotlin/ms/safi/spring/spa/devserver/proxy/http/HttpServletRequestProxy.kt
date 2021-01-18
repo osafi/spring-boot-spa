@@ -13,11 +13,11 @@ class HttpServletRequestProxy(private val targetUrl: String) {
         val logger: Logger = LoggerFactory.getLogger(HttpServletRequestProxy::class.java)
     }
 
-    fun proxyRequest(req: HttpServletRequest, resp: HttpServletResponse) {
+    operator fun invoke(req: HttpServletRequest, resp: HttpServletResponse) {
         val path = req.requestURI
         val queryParams = req.queryString?.let { "?$it" } ?: ""
         val url = "$targetUrl$path$queryParams"
-        logger.debug("[${req.method}] $path -> $url")
+        logger.trace("[${req.method}] $path -> $url")
 
         try {
             val conn = URL(url).openConnection() as HttpURLConnection
@@ -37,10 +37,10 @@ class HttpServletRequestProxy(private val targetUrl: String) {
             resp.status = conn.responseCode
 
             conn.headerFields
-                .filterKeys { it != null && it != "Transfer-Encoding" }
+                .filterKeys { it != null && it.toLowerCase() != "transfer-encoding" }
                 .forEach { (headerName, headerValues) ->
                     headerValues.forEach { headerValue ->
-                        resp.setHeader(headerName, headerValue)
+                        resp.addHeader(headerName, headerValue)
                     }
                 }
 

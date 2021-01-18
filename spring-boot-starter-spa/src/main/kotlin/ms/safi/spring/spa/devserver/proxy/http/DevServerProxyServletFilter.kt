@@ -26,6 +26,6 @@ class DevServerProxyServletFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        httpServletRequestProxy.proxyRequest(request, response)
+        httpServletRequestProxy(request, response)
     }
 }
