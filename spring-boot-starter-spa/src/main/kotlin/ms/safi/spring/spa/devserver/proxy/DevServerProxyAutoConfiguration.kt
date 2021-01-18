@@ -1,6 +1,7 @@
 package ms.safi.spring.spa.devserver.proxy
 
 import ms.safi.spring.spa.devserver.proxy.http.DevServerProxyServletFilter
+import ms.safi.spring.spa.devserver.proxy.http.HttpServletRequestProxy
 import ms.safi.spring.spa.devserver.proxy.ws.DevServerWebSocketProxy
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.AutoConfigureBefore
@@ -21,16 +22,29 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @AutoConfigureBefore(WebMvcAutoConfiguration::class)
 @EnableConfigurationProperties(DevServerProxyConfigurationProperties::class)
-class DevServerProxyAutoConfiguration(private val properties: DevServerProxyConfigurationProperties) :
-    WebSocketConfigurer {
+class DevServerProxyAutoConfiguration(
+    private val properties: DevServerProxyConfigurationProperties
+) : WebSocketConfigurer {
+
     companion object {
         private val logger = LoggerFactory.getLogger(DevServerProxyAutoConfiguration::class.java)
     }
 
     @Bean
-    fun devServerProxyServletFilter(handlerMappings: Map<String, HandlerMapping>): DevServerProxyServletFilter {
+    fun httpServletRequestProxy(): HttpServletRequestProxy {
+        return HttpServletRequestProxy(targetUrl = "http://localhost:${properties.port}")
+    }
+
+    @Bean
+    fun devServerProxyServletFilter(
+        handlerMappings: Map<String, HandlerMapping>,
+        httpServletRequestProxy: HttpServletRequestProxy
+    ): DevServerProxyServletFilter {
         logger.info("Dev server HTTP proxy filter registered")
-        return DevServerProxyServletFilter(handlerMappings = handlerMappings, properties = properties)
+        return DevServerProxyServletFilter(
+            handlerMappings = handlerMappings,
+            httpServletRequestProxy = httpServletRequestProxy
+        )
     }
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
