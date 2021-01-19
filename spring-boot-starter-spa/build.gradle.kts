@@ -55,6 +55,8 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
+    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
 
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
