@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 internal class TestRestController {
     @GetMapping("/test")
     fun testGet() = object {
+        @Suppress("unused")
         val foo = "bar"
     }
 }
