@@ -57,6 +57,7 @@ dependencies {
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
+    testImplementation("io.undertow:undertow-websockets-jsr")
     testImplementation("io.mockk:mockk:1.10.5")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
 
