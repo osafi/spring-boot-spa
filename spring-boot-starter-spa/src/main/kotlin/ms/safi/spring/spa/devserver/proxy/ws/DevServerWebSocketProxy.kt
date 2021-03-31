@@ -36,7 +36,6 @@ class DevServerWebSocketProxy(properties: DevServerProxyConfigurationProperties)
     }
 
     override fun afterConnectionClosed(clientSession: WebSocketSession, status: CloseStatus) {
-        serverSocketSessions.getValue(clientSession.id).close(status)
-        serverSocketSessions.remove(clientSession.id)
+        serverSocketSessions.remove(clientSession.id)?.use { it.close(status) }
     }
 }

@@ -16,8 +16,7 @@ class DevServerProxyServletFilter(
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         return handlerMappings
-            .entries
-            .filter { (key) -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
+            .filterKeys { key -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
             .any { it.value.getHandler(request) != null }
     }
 
