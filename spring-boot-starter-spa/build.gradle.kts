@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
     kotlin("kapt")
+    id("com.github.ben-manes.versions")
 }
 
 group = "ms.safi.spring"
@@ -57,8 +58,8 @@ dependencies {
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.5")
-    testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("com.ninja-squad:springmockk:3.1.1")
 
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
