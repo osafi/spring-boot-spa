@@ -10,12 +10,12 @@ import org.springframework.web.servlet.resource.ResourceResolverChain
 import javax.servlet.http.HttpServletRequest
 
 @Configuration(proxyBeanMethods = false)
-class SpaMvcConfiguration(val resourceProperties: WebProperties.Resources) : WebMvcConfigurer {
+class SpaMvcConfiguration(val webProperties: WebProperties) : WebMvcConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/**")
-            .addResourceLocations(*resourceProperties.staticLocations)
-            .resourceChain(resourceProperties.chain.isCache)
+            .addResourceLocations(*webProperties.resources.staticLocations)
+            .resourceChain(webProperties.resources.chain.isCache)
             .addResolver(FallbackPathResourceResolver())
     }
 

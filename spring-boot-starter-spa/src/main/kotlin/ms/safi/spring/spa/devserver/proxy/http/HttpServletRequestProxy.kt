@@ -37,7 +37,7 @@ class HttpServletRequestProxy(private val targetUrl: String) {
             resp.status = conn.responseCode
 
             conn.headerFields
-                .filterKeys { it != null && it.toLowerCase() != "transfer-encoding" }
+                .filterKeys { it != null && it.lowercase() != "transfer-encoding" }
                 .forEach { (headerName, headerValues) ->
                     headerValues.forEach { headerValue ->
                         resp.addHeader(headerName, headerValue)
