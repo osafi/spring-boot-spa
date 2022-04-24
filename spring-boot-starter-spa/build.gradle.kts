@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "ms.safi.spring"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
