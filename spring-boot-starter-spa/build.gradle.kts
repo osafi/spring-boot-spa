@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
     id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("plugin.spring")
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "ms.safi.spring"
-version = "0.0.2-SNAPSHOT"
+version = properties["VERSION_NAME"] ?: "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -20,17 +20,6 @@ repositories {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "OSSRH"
-//            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
-        }
-    }
     publications {
         create<MavenPublication>("default") {
             artifactId = "spring-boot-starter-spa"
