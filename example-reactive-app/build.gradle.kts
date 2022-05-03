@@ -7,7 +7,7 @@ plugins {
 	id("io.spring.dependency-management")
 	kotlin("jvm")
 	kotlin("plugin.spring")
-	id("com.github.hesch.execfork") version "0.1.15"
+	id("com.github.psxpaul.execfork") version "0.2.0"
 }
 
 group = "ms.safi.spring"
