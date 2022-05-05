@@ -22,7 +22,7 @@ repositories {
 publishing {
     publications {
         create<MavenPublication>("default") {
-            artifactId = "spring-boot-starter-spa"
+            artifactId = "spring-boot-spa-devserver"
             from(components["java"])
         }
     }
@@ -39,6 +39,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("stdlib-common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
