@@ -93,6 +93,6 @@ internal class HttpServletRequestProxyTest {
 
         proxy(mockRequest, mockResponse)
 
-        assertThat(mockResponse.headerNames.map { it.toLowerCase() }).doesNotContain("transfer-encoding")
+        assertThat(mockResponse.headerNames.map { it.lowercase() }).doesNotContain("transfer-encoding")
     }
 }
