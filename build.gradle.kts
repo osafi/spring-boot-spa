@@ -18,4 +18,24 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    // optional configuration based on:
+    // https://github.com/spring-projects/spring-boot/blob/main/buildSrc/src/main/java/org/springframework/boot/build/optional/OptionalDependenciesPlugin.java
+    val optional: Configuration by configurations.creating {
+        isCanBeConsumed = false
+        isCanBeResolved = false
+    }
+
+    val thisProject = this
+    plugins.withType(JavaPlugin::class.java) {
+        val sourceSets = thisProject.extensions.getByType(JavaPluginExtension::class.java).sourceSets
+        sourceSets.all {
+            thisProject.configurations.getByName(compileClasspathConfigurationName).extendsFrom(optional)
+            thisProject.configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(optional)
+        }
+    }
 }
+
+
+
+
