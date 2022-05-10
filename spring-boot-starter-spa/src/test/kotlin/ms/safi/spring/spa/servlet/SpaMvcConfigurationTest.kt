@@ -1,5 +1,6 @@
-package ms.safi.spring.spa
+package ms.safi.spring.spa.servlet
 
+import ms.safi.spring.spa.TestRestController
 import ms.safi.spring.spa.util.files.FileBuilder
 import ms.safi.spring.spa.util.files.junit.TempFileBuilder
 import ms.safi.spring.spa.util.files.junit.TemporaryFileBuilder
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 @ExtendWith(TemporaryFileBuilder::class)
-@WebMvcTest(controllers = [TestRestController::class])
+@WebMvcTest(controllers = [TestRestController::class], properties = ["spring.main.web-application-type=servlet"])
 internal class SpaMvcConfigurationTest {
 
     @Autowired

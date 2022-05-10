@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-ms.safi.spring.spa.SpaMvcConfiguration
+ms.safi.spring.spa.servlet.SpaMvcConfiguration

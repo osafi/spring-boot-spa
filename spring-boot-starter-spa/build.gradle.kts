@@ -40,6 +40,7 @@ dependencies {
     implementation(kotlin("stdlib-common"))
 
     optional("org.springframework.boot:spring-boot-starter-web")
+    optional("org.springframework.boot:spring-boot-starter-webflux")
 
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
