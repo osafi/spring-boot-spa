@@ -4,11 +4,7 @@ import ms.safi.spring.spa.TestRestController
 import ms.safi.spring.spa.util.files.FileBuilder
 import ms.safi.spring.spa.util.files.junit.TempFileBuilder
 import ms.safi.spring.spa.util.files.junit.TemporaryFileBuilder
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -17,9 +13,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 @ExtendWith(TemporaryFileBuilder::class)
-@Import(MvcSpaConfiguration::class)
-@WebMvcTest(controllers = [TestRestController::class], properties = ["spring.main.web-application-type=servlet"])
-internal class MvcSpaConfigurationTest {
+@Import(SpaWebMvcConfigurer::class)
+@WebMvcTest(controllers = [TestRestController::class])
+internal class SpaWebMvcConfigurerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

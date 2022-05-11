@@ -1,7 +1,7 @@
 package ms.safi.spring.spa
 
-import ms.safi.spring.spa.reactive.ReactiveSpaConfiguration
-import ms.safi.spring.spa.servlet.MvcSpaConfiguration
+import ms.safi.spring.spa.reactive.SpaWebFluxConfigurer
+import ms.safi.spring.spa.servlet.SpaWebMvcConfigurer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.AutoConfigurations
@@ -19,52 +19,52 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 internal class SpaAutoconfigurationTest {
 
     @Test
-    fun `does not setup SPA configuration when not a web application`() {
+    fun `does not setup SPA configurations when not a web application`() {
         ApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).doesNotHaveBean(MvcSpaConfiguration::class.java)
-                assertThat(it).doesNotHaveBean(ReactiveSpaConfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
             }
     }
 
     @Test
-    fun `uses MvcSpaConfiguration when servlet web application`() {
+    fun `configures SpaWebMvcConfigurer when servlet web application`() {
         WebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).hasSingleBean(MvcSpaConfiguration::class.java)
-                assertThat(it).doesNotHaveBean(ReactiveSpaConfiguration::class.java)
+                assertThat(it).hasSingleBean(SpaWebMvcConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
             }
     }
 
     @Test
-    fun `MvcSpaConfiguration is conditional on having WebMvcConfigurer on the classpath`() {
+    fun `SpaWebMvcConfigurer is conditional on having WebMvcConfigurer on the classpath`() {
         WebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .withClassLoader(FilteredClassLoader(WebMvcConfigurer::class.java))
             .run {
-                assertThat(it).doesNotHaveBean(MvcSpaConfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
             }
     }
 
     @Test
-    fun `uses ReactiveSpaConfiguration when reactive web application`() {
+    fun `configures SpaWebFluxConfigurer when reactive web application`() {
         ReactiveWebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).hasSingleBean(ReactiveSpaConfiguration::class.java)
-                assertThat(it).doesNotHaveBean(MvcSpaConfiguration::class.java)
+                assertThat(it).hasSingleBean(SpaWebFluxConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
             }
     }
 
     @Test
-    fun `ReactiveSpaConfiguration is conditional on having WebFluxConfigurer on the classpath`() {
+    fun `SpaWebFluxConfigurer is conditional on having WebFluxConfigurer on the classpath`() {
         ReactiveWebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .withClassLoader(FilteredClassLoader(WebFluxConfigurer::class.java))
             .run {
-                assertThat(it).doesNotHaveBean(ReactiveSpaConfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
             }
     }
 
@@ -72,11 +72,6 @@ internal class SpaAutoconfigurationTest {
 
 private fun <SELF : AbstractApplicationContextRunner<SELF, C, A>, C : ConfigurableApplicationContext, A : ApplicationContextAssertProvider<C>> AbstractApplicationContextRunner<SELF, C, A>.withSpaAutoconfigurations(): AbstractApplicationContextRunner<SELF, C, A> {
     return this
-        .withConfiguration(
-            AutoConfigurations.of(
-                MvcSpaConfiguration::class.java,
-                ReactiveSpaConfiguration::class.java
-            )
-        )
+        .withConfiguration(AutoConfigurations.of(SpaAutoconfiguration::class.java))
         .withBean(WebProperties::class.java)
 }
