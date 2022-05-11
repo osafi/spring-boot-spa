@@ -35,10 +35,6 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("stdlib-common"))
-
     optional("org.springframework.boot:spring-boot-starter-web")
     optional("org.springframework.boot:spring-boot-starter-webflux")
 
@@ -48,11 +44,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    testImplementation("org.springframework.boot:spring-boot-starter-actuator")
-    testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.12.3")
-    testImplementation("com.ninja-squad:springmockk:3.1.1")
 }
 
 tasks.withType<Test> {
