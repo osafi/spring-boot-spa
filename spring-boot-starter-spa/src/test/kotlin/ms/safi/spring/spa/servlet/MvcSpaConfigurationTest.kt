@@ -12,10 +12,12 @@ import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 @ExtendWith(TemporaryFileBuilder::class)
+@Import(MvcSpaConfiguration::class)
 @WebMvcTest(controllers = [TestRestController::class], properties = ["spring.main.web-application-type=servlet"])
 internal class MvcSpaConfigurationTest {
 

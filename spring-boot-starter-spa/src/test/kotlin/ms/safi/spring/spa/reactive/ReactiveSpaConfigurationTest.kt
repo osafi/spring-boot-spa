@@ -8,12 +8,14 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.CacheControl
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.concurrent.TimeUnit
 
 @ExtendWith(TemporaryFileBuilder::class)
+@Import(ReactiveSpaConfiguration::class)
 @WebFluxTest(controllers = [TestRestController::class], properties = ["spring.main.web-application-type=reactive"])
 internal class ReactiveSpaConfigurationTest {
 
