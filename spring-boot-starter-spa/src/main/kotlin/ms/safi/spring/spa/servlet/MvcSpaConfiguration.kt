@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest
 @ConditionalOnClass(WebMvcConfigurer::class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Configuration(proxyBeanMethods = false)
-class SpaMvcConfiguration(val webProperties: WebProperties) : WebMvcConfigurer {
+class MvcSpaConfiguration(val webProperties: WebProperties) : WebMvcConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/static/**")

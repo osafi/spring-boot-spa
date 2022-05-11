@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.get
 
 @ExtendWith(TemporaryFileBuilder::class)
 @WebMvcTest(controllers = [TestRestController::class], properties = ["spring.main.web-application-type=servlet"])
-internal class SpaMvcConfigurationTest {
+internal class MvcSpaConfigurationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

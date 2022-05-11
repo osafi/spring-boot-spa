@@ -1,5 +1,5 @@
 org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc=\
-ms.safi.spring.spa.servlet.SpaMvcConfiguration
+ms.safi.spring.spa.servlet.MvcSpaConfiguration
 
 org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient=\
 ms.safi.spring.spa.reactive.ReactiveSpaConfiguration

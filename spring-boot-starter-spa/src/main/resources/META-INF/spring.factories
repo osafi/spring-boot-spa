@@ -1,3 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-ms.safi.spring.spa.servlet.SpaMvcConfiguration,\
+ms.safi.spring.spa.servlet.MvcSpaConfiguration,\
 ms.safi.spring.spa.reactive.ReactiveSpaConfiguration
