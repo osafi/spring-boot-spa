@@ -10,4 +10,4 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
         "spring.main.web-application-type=reactive"
     ]
 )
-internal class SpaWebMvcAutoconfigurationTest : SpaIntegrationTest()
+internal class SpaWebMvcIntegrationTest : SpaIntegrationTest()

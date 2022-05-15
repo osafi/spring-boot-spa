@@ -10,4 +10,4 @@ import org.springframework.boot.test.context.SpringBootTest.*
         "spring.main.web-application-type=reactive"
     ]
 )
-internal class SpaWebFluxAutoconfigurationTest : SpaIntegrationTest()
+internal class SpaWebFluxIntegrationTest : SpaIntegrationTest()
