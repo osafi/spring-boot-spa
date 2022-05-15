@@ -15,9 +15,9 @@ import org.springframework.test.web.reactive.server.expectBody
 import java.util.concurrent.TimeUnit
 
 @ExtendWith(TemporaryFileBuilder::class)
-@Import(SpaWebFluxConfigurer::class)
+@Import(SpaWebFluxAutoconfiguration::class)
 @WebFluxTest(controllers = [TestRestController::class])
-internal class SpaWebFluxConfigurerTest {
+internal class SpaWebFluxAutoconfigurationTest {
 
     @Autowired
     private lateinit var webTestClient: WebTestClient

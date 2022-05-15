@@ -1,7 +1,7 @@
 package ms.safi.spring.spa
 
-import ms.safi.spring.spa.reactive.SpaWebFluxConfigurer
-import ms.safi.spring.spa.servlet.SpaWebMvcConfigurer
+import ms.safi.spring.spa.reactive.SpaWebFluxAutoconfiguration
+import ms.safi.spring.spa.servlet.SpaWebMvcAutoconfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.AutoConfigurations
@@ -23,8 +23,8 @@ internal class SpaAutoconfigurationTest {
         ApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
-                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcAutoconfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxAutoconfiguration::class.java)
             }
     }
 
@@ -33,8 +33,8 @@ internal class SpaAutoconfigurationTest {
         WebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).hasSingleBean(SpaWebMvcConfigurer::class.java)
-                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
+                assertThat(it).hasSingleBean(SpaWebMvcAutoconfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxAutoconfiguration::class.java)
             }
     }
 
@@ -44,7 +44,7 @@ internal class SpaAutoconfigurationTest {
             .withSpaAutoconfigurations()
             .withClassLoader(FilteredClassLoader(WebMvcConfigurer::class.java))
             .run {
-                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcAutoconfiguration::class.java)
             }
     }
 
@@ -53,8 +53,8 @@ internal class SpaAutoconfigurationTest {
         ReactiveWebApplicationContextRunner()
             .withSpaAutoconfigurations()
             .run {
-                assertThat(it).hasSingleBean(SpaWebFluxConfigurer::class.java)
-                assertThat(it).doesNotHaveBean(SpaWebMvcConfigurer::class.java)
+                assertThat(it).hasSingleBean(SpaWebFluxAutoconfiguration::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebMvcAutoconfiguration::class.java)
             }
     }
 
@@ -64,7 +64,7 @@ internal class SpaAutoconfigurationTest {
             .withSpaAutoconfigurations()
             .withClassLoader(FilteredClassLoader(WebFluxConfigurer::class.java))
             .run {
-                assertThat(it).doesNotHaveBean(SpaWebFluxConfigurer::class.java)
+                assertThat(it).doesNotHaveBean(SpaWebFluxAutoconfiguration::class.java)
             }
     }
 
@@ -72,6 +72,6 @@ internal class SpaAutoconfigurationTest {
 
 private fun <SELF : AbstractApplicationContextRunner<SELF, C, A>, C : ConfigurableApplicationContext, A : ApplicationContextAssertProvider<C>> AbstractApplicationContextRunner<SELF, C, A>.withSpaAutoconfigurations(): AbstractApplicationContextRunner<SELF, C, A> {
     return this
-        .withConfiguration(AutoConfigurations.of(SpaWebFluxConfigurer::class.java, SpaWebMvcConfigurer::class.java))
+        .withConfiguration(AutoConfigurations.of(SpaWebFluxAutoconfiguration::class.java, SpaWebMvcAutoconfiguration::class.java))
         .withBean(WebProperties::class.java)
 }

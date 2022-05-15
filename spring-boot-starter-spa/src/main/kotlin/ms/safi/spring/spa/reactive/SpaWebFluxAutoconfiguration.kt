@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.boot.autoconfigure.web.WebProperties
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.http.CacheControl
@@ -14,7 +13,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.resource.PathResourceResolver
 import org.springframework.web.reactive.resource.ResourceResolverChain
 import org.springframework.web.server.ServerWebExchange
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import reactor.core.publisher.Mono
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +20,7 @@ import java.util.concurrent.TimeUnit
 @ConditionalOnClass(WebFluxConfigurer::class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @Configuration(proxyBeanMethods = false)
-class SpaWebFluxConfigurer(private val webProperties: WebProperties) : WebFluxConfigurer {
+class SpaWebFluxAutoconfiguration(private val webProperties: WebProperties) : WebFluxConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/static/**")
