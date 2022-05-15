@@ -72,6 +72,6 @@ internal class SpaAutoconfigurationTest {
 
 private fun <SELF : AbstractApplicationContextRunner<SELF, C, A>, C : ConfigurableApplicationContext, A : ApplicationContextAssertProvider<C>> AbstractApplicationContextRunner<SELF, C, A>.withSpaAutoconfigurations(): AbstractApplicationContextRunner<SELF, C, A> {
     return this
-        .withConfiguration(AutoConfigurations.of(SpaAutoconfiguration::class.java))
+        .withConfiguration(AutoConfigurations.of(SpaWebFluxConfigurer::class.java, SpaWebMvcConfigurer::class.java))
         .withBean(WebProperties::class.java)
 }

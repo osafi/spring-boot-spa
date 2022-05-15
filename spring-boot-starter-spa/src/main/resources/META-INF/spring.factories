@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-ms.safi.spring.spa.SpaAutoconfiguration
+ms.safi.spring.spa.servlet.SpaWebMvcConfigurer,\
+ms.safi.spring.spa.reactive.SpaWebFluxConfigurer
