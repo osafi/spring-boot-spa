@@ -1,25 +1,26 @@
-package ms.safi.spring.spa.servlet
+package ms.safi.spring.spa.reactive
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.boot.autoconfigure.web.WebProperties
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.http.CacheControl
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import org.springframework.web.servlet.resource.PathResourceResolver
-import org.springframework.web.servlet.resource.ResourceResolverChain
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.reactive.resource.PathResourceResolver
+import org.springframework.web.reactive.resource.ResourceResolverChain
+import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
 import java.util.concurrent.TimeUnit
-import javax.servlet.http.HttpServletRequest
 
-@AutoConfigureBefore(WebMvcAutoConfiguration::class)
-@ConditionalOnClass(WebMvcConfigurer::class)
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@AutoConfigureBefore(WebFluxAutoConfiguration::class)
+@ConditionalOnClass(WebFluxConfigurer::class)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @Configuration(proxyBeanMethods = false)
-class SpaWebMvcAutoconfiguration(private val webProperties: WebProperties) : WebMvcConfigurer {
+class SpaWebFluxAutoConfiguration(private val webProperties: WebProperties) : WebFluxConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/static/**")
@@ -35,14 +36,16 @@ class SpaWebMvcAutoconfiguration(private val webProperties: WebProperties) : Web
     }
 
     private class IndexFallbackPathResourceResolver : PathResourceResolver() {
+
         override fun resolveResource(
-            request: HttpServletRequest?,
+            exchange: ServerWebExchange?,
             requestPath: String,
             locations: MutableList<out Resource>,
             chain: ResourceResolverChain
-        ): Resource? {
-            return super.resolveResource(request, requestPath, locations, chain)
-                ?: super.resolveResource(request, "/index.html", locations, chain)
+        ): Mono<Resource> {
+            return super.resolveResource(exchange, requestPath, locations, chain)
+                .switchIfEmpty(super.resolveResource(exchange, "/index.html", locations, chain))
+
         }
     }
 }
