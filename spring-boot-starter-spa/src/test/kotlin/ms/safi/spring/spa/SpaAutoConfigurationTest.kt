@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.autoconfigure.web.WebProperties
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties
 import org.springframework.boot.test.context.FilteredClassLoader
 import org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider
 import org.springframework.boot.test.context.runner.AbstractApplicationContextRunner
@@ -74,4 +75,5 @@ private fun <SELF : AbstractApplicationContextRunner<SELF, C, A>, C : Configurab
     return this
         .withConfiguration(AutoConfigurations.of(SpaWebFluxAutoConfiguration::class.java, SpaWebMvcAutoConfiguration::class.java))
         .withBean(WebProperties::class.java)
+        .withBean(WebMvcProperties::class.java)
 }
