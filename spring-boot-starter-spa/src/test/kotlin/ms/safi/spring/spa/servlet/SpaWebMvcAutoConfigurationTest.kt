@@ -1,6 +1,5 @@
 package ms.safi.spring.spa.servlet
 
-import ms.safi.spring.spa.servlet.SpaWebMvcAutoConfiguration.IndexFallbackPathResourceResolver
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.AutoConfigurations

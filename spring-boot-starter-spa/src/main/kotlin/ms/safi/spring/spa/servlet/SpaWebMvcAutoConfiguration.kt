@@ -5,14 +5,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.web.WebProperties
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.io.Resource
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.resource.EncodedResourceResolver
-import org.springframework.web.servlet.resource.PathResourceResolver
-import org.springframework.web.servlet.resource.ResourceResolverChain
 import org.springframework.web.servlet.resource.VersionResourceResolver
-import javax.servlet.http.HttpServletRequest
 
 @ConditionalOnClass(WebMvcConfigurer::class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
@@ -29,7 +25,6 @@ class SpaWebMvcAutoConfiguration(
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         val handlerRegistration = registry.addResourceHandler(webMvcProperties.staticPathPattern)
         handlerRegistration.addResourceLocations(*resourceProperties.staticLocations)
-        // possibly add ServletContextResource via addResourceLocations here
 
         cacheProperties.period?.seconds?.let {
             handlerRegistration.setCachePeriod(it.toInt())
@@ -60,17 +55,5 @@ class SpaWebMvcAutoConfiguration(
         }
 
         chainRegistration.addResolver(IndexFallbackPathResourceResolver())
-    }
-
-    class IndexFallbackPathResourceResolver : PathResourceResolver() {
-        override fun resolveResource(
-            request: HttpServletRequest?,
-            requestPath: String,
-            locations: MutableList<out Resource>,
-            chain: ResourceResolverChain
-        ): Resource? {
-            return super.resolveResource(request, requestPath, locations, chain)
-                ?: super.resolveResource(request, "/index.html", locations, chain)
-        }
     }
 }
