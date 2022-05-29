@@ -128,6 +128,7 @@ internal class SpaWebMvcAutoConfigurationTest {
                 assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
                     CachingResourceTransformer::class.java,
                     CssLinkResourceTransformer::class.java,
+                    IndexLinkResourceTransformer::class.java,
                 )
 
                 val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver
@@ -155,6 +156,7 @@ internal class SpaWebMvcAutoConfigurationTest {
                 assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
                     CachingResourceTransformer::class.java,
                     CssLinkResourceTransformer::class.java,
+                    IndexLinkResourceTransformer::class.java,
                 )
 
                 val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver
@@ -183,6 +185,11 @@ internal class SpaWebMvcAutoConfigurationTest {
                     EncodedResourceResolver::class.java,
                     VersionResourceResolver::class.java,
                     IndexFallbackPathResourceResolver::class.java,
+                )
+
+                assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
+                    CssLinkResourceTransformer::class.java,
+                    IndexLinkResourceTransformer::class.java,
                 )
 
                 val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver

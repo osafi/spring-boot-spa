@@ -52,6 +52,7 @@ class SpaWebMvcAutoConfiguration(
                 resolver.addContentVersionStrategy(*paths)
             }
             chainRegistration.addResolver(resolver)
+            chainRegistration.addTransformer(IndexLinkResourceTransformer())
         }
 
         chainRegistration.addResolver(IndexFallbackPathResourceResolver())
