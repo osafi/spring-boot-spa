@@ -1,4 +1,4 @@
-package ms.safi.spring.spa.servlet
+package ms.safi.spring.spa.servlet.support
 
 import org.springframework.core.io.Resource
 import org.springframework.web.servlet.resource.ResourceResolver

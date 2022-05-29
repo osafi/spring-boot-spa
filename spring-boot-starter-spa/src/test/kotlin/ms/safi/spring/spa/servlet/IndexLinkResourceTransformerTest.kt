@@ -2,6 +2,8 @@ package ms.safi.spring.spa.servlet
 
 import io.mockk.mockk
 import io.mockk.verify
+import ms.safi.spring.spa.servlet.support.TestResourceResolverChain
+import ms.safi.spring.spa.servlet.support.TestResourceTransformerChain
 import ms.safi.spring.spa.util.files.FileBuilder
 import ms.safi.spring.spa.util.files.junit.TempFileBuilder
 import ms.safi.spring.spa.util.files.junit.TemporaryFileBuilder
