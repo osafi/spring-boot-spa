@@ -35,12 +35,11 @@ class SpaWebMvcAutoConfiguration(
         val chainRegistration = handlerRegistration.resourceChain(chainProperties.isCache)
         chainRegistration.addResolver(IndexFallbackResourceResolver())
 
-        val strategy = chainProperties.strategy
-
         if (chainProperties.isCompressed) {
             chainRegistration.addResolver(EncodedResourceResolver())
         }
 
+        val strategy = chainProperties.strategy
         if (strategy.fixed.isEnabled || strategy.content.isEnabled) {
             val resolver = VersionResourceResolver()
             if (strategy.fixed.isEnabled) {
