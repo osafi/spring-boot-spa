@@ -28,7 +28,7 @@ internal class IndexLinkResourceTransformerTest {
     private lateinit var file: FileBuilder
 
     @BeforeEach
-    fun setUp(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) {
+    fun setUp(@TempFileBuilder file: FileBuilder) {
         this.file = file
 
         val resolvers = listOf(

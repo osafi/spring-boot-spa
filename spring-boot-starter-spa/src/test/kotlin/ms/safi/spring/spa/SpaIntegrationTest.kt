@@ -17,7 +17,7 @@ abstract class SpaIntegrationTest {
     private lateinit var webTestClient: WebTestClient
 
     @Test
-    fun `returns index html for unknown paths`(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) {
+    fun `returns index html for unknown paths`(@TempFileBuilder file: FileBuilder) {
         file("static/index.html", """I'm a sample index.html""")
 
         webTestClient
@@ -41,7 +41,7 @@ abstract class SpaIntegrationTest {
     }
 
     @Test
-    fun `returns static resources other than index html`(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) {
+    fun `returns static resources other than index html`(@TempFileBuilder file: FileBuilder) {
         file("static/example.txt", """I'm a sample text file""")
         file("static/static/another.txt", """I'm another text file""")
 
@@ -69,7 +69,7 @@ abstract class SpaIntegrationTest {
 
         @TestFactory
         @DisplayName("cacheable resources")
-        fun cacheableResources(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) = listOf(
+        fun cacheableResources(@TempFileBuilder file: FileBuilder) = listOf(
             "static/static/css/main.073c9b0a.css",
             "static/static/js/main.ab3575d7.js",
             "static/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
@@ -89,7 +89,7 @@ abstract class SpaIntegrationTest {
 
         @TestFactory
         @DisplayName("non-cacheable resources")
-        fun nonCacheableResources(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) = listOf(
+        fun nonCacheableResources(@TempFileBuilder file: FileBuilder) = listOf(
             "static/index.html",
             "static/favicon.ico",
             "static/manifest.json",
@@ -110,7 +110,7 @@ abstract class SpaIntegrationTest {
     }
 
     @Test
-    fun `REST endpoints remain accessible`(@TempFileBuilder(rootOnClasspath = true) file: FileBuilder) {
+    fun `REST endpoints remain accessible`(@TempFileBuilder file: FileBuilder) {
         file("test", "file that should not be returned")
 
         webTestClient

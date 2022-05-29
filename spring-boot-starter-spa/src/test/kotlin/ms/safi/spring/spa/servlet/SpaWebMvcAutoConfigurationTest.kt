@@ -30,12 +30,13 @@ internal class SpaWebMvcAutoConfigurationTest {
     )
 
     @Test
-    fun `overrides the ALL resource handler mapping to use IndexFallbackPathResourceResolver`() {
+    fun `overrides the ALL resource handler mapping to use IndexFallbackResourceResolver`() {
         this.contextRunner.run {
-            assertThat(getMappingResourceResolvers(it, "/**")).hasSize(2)
+            assertThat(getMappingResourceResolvers(it, "/**")).hasSize(3)
             assertThat(getMappingResourceResolvers(it, "/**")).extractingResultOf("getClass").containsExactly(
                 CachingResourceResolver::class.java,
-                IndexFallbackPathResourceResolver::class.java,
+                IndexFallbackResourceResolver::class.java,
+                PathResourceResolver::class.java,
             )
         }
     }
@@ -45,9 +46,10 @@ internal class SpaWebMvcAutoConfigurationTest {
         this.contextRunner
             .withPropertyValues("spring.web.resources.chain.cache=false")
             .run {
-                assertThat(getMappingResourceResolvers(it, "/**")).hasSize(1)
+                assertThat(getMappingResourceResolvers(it, "/**")).hasSize(2)
                 assertThat(getMappingResourceResolvers(it, "/**")).extractingResultOf("getClass").containsExactly(
-                    IndexFallbackPathResourceResolver::class.java,
+                    IndexFallbackResourceResolver::class.java,
+                    PathResourceResolver::class.java,
                 )
             }
     }
@@ -58,7 +60,12 @@ internal class SpaWebMvcAutoConfigurationTest {
             .withPropertyValues("spring.mvc.static-path-pattern=/static/**")
             .run {
                 assertThat(getResourceHandlerMapping(it).handlerMap).hasSize(2)
-                assertThat(getMappingLocations(it, "/static/**")).hasSize(4) // should be 5 - need to add Servlet context
+                assertThat(
+                    getMappingLocations(
+                        it,
+                        "/static/**"
+                    )
+                ).hasSize(4) // should be 5 - need to add Servlet context
             }
     }
 
@@ -118,11 +125,12 @@ internal class SpaWebMvcAutoConfigurationTest {
             )
             .run {
                 val allResourceResolver = getMappingResourceResolvers(it, "/**")
-                assertThat(allResourceResolver).hasSize(3)
+                assertThat(allResourceResolver).hasSize(4)
                 assertThat(allResourceResolver).extractingResultOf("getClass").containsExactly(
                     CachingResourceResolver::class.java,
+                    IndexFallbackResourceResolver::class.java,
                     VersionResourceResolver::class.java,
-                    IndexFallbackPathResourceResolver::class.java,
+                    PathResourceResolver::class.java
                 )
 
                 assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
@@ -131,7 +139,7 @@ internal class SpaWebMvcAutoConfigurationTest {
                     IndexLinkResourceTransformer::class.java,
                 )
 
-                val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver
+                val versionResourceResolver = allResourceResolver[2] as VersionResourceResolver
                 assertThat(versionResourceResolver.strategyMap).hasSize(2)
                 assertThat(versionResourceResolver.strategyMap["/**/*.js"]).isInstanceOf(FixedVersionStrategy::class.java)
             }
@@ -146,11 +154,12 @@ internal class SpaWebMvcAutoConfigurationTest {
             )
             .run {
                 val allResourceResolver = getMappingResourceResolvers(it, "/**")
-                assertThat(allResourceResolver).hasSize(3)
+                assertThat(allResourceResolver).hasSize(4)
                 assertThat(allResourceResolver).extractingResultOf("getClass").containsExactly(
                     CachingResourceResolver::class.java,
+                    IndexFallbackResourceResolver::class.java,
                     VersionResourceResolver::class.java,
-                    IndexFallbackPathResourceResolver::class.java,
+                    PathResourceResolver::class.java
                 )
 
                 assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
@@ -159,7 +168,7 @@ internal class SpaWebMvcAutoConfigurationTest {
                     IndexLinkResourceTransformer::class.java,
                 )
 
-                val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver
+                val versionResourceResolver = allResourceResolver[2] as VersionResourceResolver
                 assertThat(versionResourceResolver.strategyMap).hasSize(2)
                 assertThat(versionResourceResolver.strategyMap["/*.png"]).isInstanceOf(ContentVersionStrategy::class.java)
                 assertThat(versionResourceResolver.strategyMap["/**"]).isInstanceOf(ContentVersionStrategy::class.java)
@@ -180,11 +189,12 @@ internal class SpaWebMvcAutoConfigurationTest {
             )
             .run {
                 val allResourceResolver = getMappingResourceResolvers(it, "/**")
-                assertThat(allResourceResolver).hasSize(3)
+                assertThat(allResourceResolver).hasSize(4)
                 assertThat(allResourceResolver).extractingResultOf("getClass").containsExactly(
+                    IndexFallbackResourceResolver::class.java,
                     EncodedResourceResolver::class.java,
                     VersionResourceResolver::class.java,
-                    IndexFallbackPathResourceResolver::class.java,
+                    PathResourceResolver::class.java,
                 )
 
                 assertThat(getMappingResourceTransformers(it, "/**")).extractingResultOf("getClass").containsExactly(
@@ -192,7 +202,7 @@ internal class SpaWebMvcAutoConfigurationTest {
                     IndexLinkResourceTransformer::class.java,
                 )
 
-                val versionResourceResolver = allResourceResolver[1] as VersionResourceResolver
+                val versionResourceResolver = allResourceResolver[2] as VersionResourceResolver
                 assertThat(versionResourceResolver.strategyMap).hasSize(4)
                 assertThat(versionResourceResolver.strategyMap["/*.png"]).isInstanceOf(ContentVersionStrategy::class.java)
                 assertThat(versionResourceResolver.strategyMap["/**"]).isInstanceOf(ContentVersionStrategy::class.java)
@@ -213,7 +223,10 @@ internal class SpaWebMvcAutoConfigurationTest {
         return getHandlerMapping(context, mapping).resourceResolvers
     }
 
-    private fun getMappingResourceTransformers(context: ApplicationContext, mapping: String): List<ResourceTransformer> {
+    private fun getMappingResourceTransformers(
+        context: ApplicationContext,
+        mapping: String
+    ): List<ResourceTransformer> {
         return getHandlerMapping(context, mapping).resourceTransformers
     }
 

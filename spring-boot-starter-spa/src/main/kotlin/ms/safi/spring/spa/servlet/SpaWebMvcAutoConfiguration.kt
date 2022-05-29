@@ -33,6 +33,7 @@ class SpaWebMvcAutoConfiguration(
         handlerRegistration.setUseLastModified(cacheProperties.isUseLastModified)
 
         val chainRegistration = handlerRegistration.resourceChain(chainProperties.isCache)
+        chainRegistration.addResolver(IndexFallbackResourceResolver())
 
         val strategy = chainProperties.strategy
 
@@ -54,7 +55,5 @@ class SpaWebMvcAutoConfiguration(
             chainRegistration.addResolver(resolver)
             chainRegistration.addTransformer(IndexLinkResourceTransformer())
         }
-
-        chainRegistration.addResolver(IndexFallbackPathResourceResolver())
     }
 }
