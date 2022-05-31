@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.reactive
 
+import ms.safi.spring.spa.shared.IndexLinkResourceTransformerSupport
 import org.springframework.core.io.Resource
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.util.StreamUtils
@@ -12,22 +13,7 @@ import reactor.core.publisher.Mono
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets.UTF_8
 
-
-class IndexLinkResourceTransformer : ResourceTransformerSupport() {
-    companion object {
-        private val URL_REGEX = """(?:src|href)\s*=\s*(?<quote>["'])(?<url>\S*)\k<quote>""".toRegex()
-
-        private data class Chunk(val range: IntRange, val isLink: Boolean) {
-            val start: Int
-                get() = this.range.first
-            val end: Int
-                get() = this.range.last
-
-            fun getContent(content: String): String {
-                return content.substring(range)
-            }
-        }
-    }
+class IndexLinkResourceTransformer : ResourceTransformerSupport(), IndexLinkResourceTransformerSupport {
 
     override fun transform(
         exchange: ServerWebExchange,
@@ -72,34 +58,5 @@ class IndexLinkResourceTransformer : ResourceTransformerSupport() {
             }
             .reduce(StringWriter()) { writer, chunkContent -> writer.write(chunkContent); writer }
             .map { TransformedResource(resource, it.toString().toByteArray(UTF_8)) }
-    }
-
-    private fun parseIntoChunks(indexContent: String): List<Chunk>? {
-        val linkChunks = URL_REGEX.findAll(indexContent)
-            .map { Chunk(range = it.groups["url"]!!.range, isLink = true) }
-            .toList()
-
-        if (linkChunks.isEmpty()) {
-            return null
-        }
-
-        val chunks: MutableList<Chunk> = mutableListOf()
-        var position = 0
-
-        for (link in linkChunks) {
-            chunks.add(Chunk(range = IntRange(position, link.start - 1), isLink = false))
-            chunks.add(link)
-            position = link.end + 1
-        }
-        if (position < indexContent.length) {
-            chunks.add(Chunk(range = IntRange(position, indexContent.length - 1), isLink = false))
-        }
-
-        return chunks
-    }
-
-    private fun hasScheme(link: String): Boolean {
-        val schemeIndex = link.indexOf(':')
-        return (schemeIndex > 0 && !link.substring(0, schemeIndex).contains("/")) || link.indexOf("//") == 0
     }
 }
