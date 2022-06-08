@@ -3,15 +3,26 @@ package ms.safi.spring.spa
 import ms.safi.spring.spa.util.files.FileBuilder
 import ms.safi.spring.spa.util.files.junit.TempFileBuilder
 import ms.safi.spring.spa.util.files.junit.TemporaryFileBuilder
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.CacheControl
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 @ExtendWith(TemporaryFileBuilder::class)
+@TestPropertySource(
+    properties = [
+        "spring.web.resources.chain.cache=false", // Disabling resource chain caching to prevent pollution between tests
+        "spring.web.resources.chain.strategy.content.enabled=true",
+        "spring.web.resources.cache.period=365d",
+        "spring.web.resources.cache.use-last-modified=true"
+    ]
+)
 abstract class SpaIntegrationTest {
     @Autowired
     private lateinit var webTestClient: WebTestClient
@@ -64,51 +75,6 @@ abstract class SpaIntegrationTest {
             .isEqualTo("""I'm another text file""")
     }
 
-    @Nested
-    inner class `react-scripts project cache control` {
-
-        @TestFactory
-        @DisplayName("cacheable resources")
-        fun cacheableResources(@TempFileBuilder file: FileBuilder) = listOf(
-            "static/static/css/main.073c9b0a.css",
-            "static/static/js/main.ab3575d7.js",
-            "static/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-        ).map { fileName ->
-            file(fileName)
-            DynamicTest.dynamicTest(fileName) {
-                webTestClient
-                    .get()
-                    .uri(fileName.replaceFirst("static", ""))
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectHeader()
-                    .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
-            }
-        }
-
-        @TestFactory
-        @DisplayName("non-cacheable resources")
-        fun nonCacheableResources(@TempFileBuilder file: FileBuilder) = listOf(
-            "static/index.html",
-            "static/favicon.ico",
-            "static/manifest.json",
-            "static/logo.png",
-        ).map { fileName ->
-            file(fileName)
-            DynamicTest.dynamicTest(fileName) {
-                webTestClient
-                    .get()
-                    .uri(fileName.replaceFirst("static", ""))
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectHeader()
-                    .doesNotExist("Cache-Control")
-            }
-        }
-    }
-
     @Test
     fun `REST endpoints remain accessible`(@TempFileBuilder file: FileBuilder) {
         file("test", "file that should not be returned")
@@ -121,5 +87,60 @@ abstract class SpaIntegrationTest {
             .isOk
             .expectBody()
             .json("""{"foo": "bar"}""")
+    }
+
+    @Test
+    fun `transforms URLs in index html based on enabled cache strategy`(@TempFileBuilder file: FileBuilder) {
+        file(
+            "static/index.html", """
+                <html>
+                <head>
+                    <script defer="defer" src="/js/main.js"></script>
+                    <link href="/css/main.css" rel="stylesheet">
+                </head>
+                <body>
+                    <div id="root"></div>
+                </body>
+                </html>
+            """.trimIndent()
+        )
+        file("static/js/main.js", """I'm a sample JS file""")
+
+        val expectedIndexHtml = """
+            <html>
+            <head>
+                <script defer="defer" src="/js/main-82a9c788e1e4ac44f388a8a04a3dbb42.js"></script>
+                <link href="/css/main.css" rel="stylesheet">
+            </head>
+            <body>
+                <div id="root"></div>
+            </body>
+            </html>
+        """.trimIndent()
+
+        webTestClient
+            .get()
+            .uri("/index.html")
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<String>()
+            .isEqualTo(expectedIndexHtml)
+    }
+
+    @Test
+    fun `includes cache-control headers`(@TempFileBuilder file: FileBuilder) {
+        val mainJs = file("static/js/main.js", """I'm a sample JS file""")
+
+        webTestClient
+            .get()
+            .uri("/js/main.js")
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectHeader()
+            .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+            .expectHeader()
+            .lastModified(Instant.ofEpochMilli(mainJs.lastModified()).truncatedTo(ChronoUnit.SECONDS).toEpochMilli())
     }
 }

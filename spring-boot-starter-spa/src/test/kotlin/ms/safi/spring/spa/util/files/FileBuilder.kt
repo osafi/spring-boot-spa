@@ -1,5 +1,6 @@
 package ms.safi.spring.spa.util.files
 
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -7,11 +8,11 @@ class FileBuilder(rootOnClasspath: Boolean) {
     private val createdFiles: MutableList<Path> = mutableListOf()
     private val rootPath: Path? = if (rootOnClasspath) classpathPath() else null
 
-    operator fun invoke(path: String, fileContent: String = "") {
-        this.invoke(Path.of(path), fileContent)
+    operator fun invoke(path: String, fileContent: String = ""): File {
+        return this.invoke(Path.of(path), fileContent)
     }
 
-    operator fun invoke(path: Path, fileContent: String = "") {
+    operator fun invoke(path: Path, fileContent: String = ""): File {
         val pathToWrite = rootPath?.resolve(path) ?: path
         val greatestAncestorToDelete = getGreatestAncestorThatNeedsToBeCreated(pathToWrite)
 
@@ -20,6 +21,8 @@ class FileBuilder(rootOnClasspath: Boolean) {
 
         createdFiles.add(pathToWrite)
         greatestAncestorToDelete?.also(createdFiles::add)
+
+        return pathToWrite.toFile()
     }
 
     fun deleteCreatedFiles() {
