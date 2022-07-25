@@ -1,0 +1,21 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework: INFO
+    ms.safi: TRACE
+
+spring:
+  web:
+    resources:
+      chain:
+        cache: true
+        strategy:
+          content:
+            enabled: true
+      cache:
+        period: 365d
