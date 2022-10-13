@@ -43,20 +43,53 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+val installFrontend = tasks.register<Exec>("installFrontend") {
+    inputs.file(file("$projectDir/src/js/yarn.lock"))
+    inputs.file(file("$projectDir/src/js/package.json"))
+    outputs.dir(file("$projectDir/src/js/node_modules"))
+    workingDir = file("$projectDir/src/js")
+    commandLine("yarn", "install")
+}
+
+val buildFrontend = tasks.register<Exec>("buildFrontend") {
+    dependsOn(installFrontend)
+    inputs.dir(file("$projectDir/src/js/src"))
+    inputs.dir(file("$projectDir/src/js/public"))
+    outputs.dir("$projectDir/src/js/dist")
+    workingDir = file("$projectDir/src/js")
+    commandLine("yarn", "build")
+}
+
+val copyFrontend = tasks.register<Sync>("copyFrontend") {
+    dependsOn(buildFrontend)
+    from(file("$projectDir/src/js/dist"))
+    into(file("$buildDir/resources/main/static"))
+    doLast {
+        println("copied built frontend to static resources")
+    }
+}
+
 val spaDevServerTask = tasks.register<ExecFork>("spaDevServer") {
+    dependsOn(installFrontend)
+
     val port = 3000 // findOpenPort()
-    executable = "npm"
-    args = mutableListOf("run", "start")
+    executable = "yarn"
+    args = mutableListOf("dev")
     workingDir = file("$projectDir/src/js")
     timeout = 300
     waitForOutput = "Compiled successfully!"
     waitForPort = port
     environment = mapOf(
-            "BROWSER" to "none",
-            "PORT" to port
+        "BROWSER" to "none",
+        "PORT" to port
     )
 }
 
-tasks.withType<BootRun> {
-    dependsOn(spaDevServerTask)
+val bootRun = tasks.withType<BootRun> {
+    if (project.hasProperty("dev")) {
+        dependsOn(spaDevServerTask)
+        systemProperty("spring.profiles.active", "dev")
+    } else {
+        dependsOn(copyFrontend)
+    }
 }
