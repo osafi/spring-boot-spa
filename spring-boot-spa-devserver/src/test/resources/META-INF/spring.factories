@@ -1,2 +1,2 @@
 org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc=\
-ms.safi.spring.spa.SpaMvcConfiguration
+ms.safi.spring.spa.servlet.SpaWebMvcAutoConfiguration

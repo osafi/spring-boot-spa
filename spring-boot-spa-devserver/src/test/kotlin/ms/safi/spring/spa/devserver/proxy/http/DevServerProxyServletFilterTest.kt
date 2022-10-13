@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
-@Disabled("Using RequestMappingHandlerMapping in a filter no longer works as it did before, will need to revisit this: https://github.com/spring-projects/spring-boot/issues/28874")
+//@Disabled("Using RequestMappingHandlerMapping in a filter no longer works as it did before, will need to revisit this: https://github.com/spring-projects/spring-boot/issues/28874")
 @SpringBootTest(properties = ["spa.devserver.proxy.enabled=true"])
 @AutoConfigureMockMvc
 internal class DevServerProxyServletFilterTest {

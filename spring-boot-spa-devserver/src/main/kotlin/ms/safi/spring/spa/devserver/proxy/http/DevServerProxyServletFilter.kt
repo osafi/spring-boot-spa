@@ -4,6 +4,7 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerMapping
+import org.springframework.web.util.ServletRequestPathUtils
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -15,6 +16,9 @@ class DevServerProxyServletFilter(
 ) : OncePerRequestFilter() {
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        if (!ServletRequestPathUtils.hasParsedRequestPath(request)) {
+            ServletRequestPathUtils.parseAndCache(request);
+        }
         return handlerMappings
             .filterKeys { key -> key != "resourceHandlerMapping" && key != "welcomePageHandlerMapping" }
             .any { it.value.getHandler(request) != null }
