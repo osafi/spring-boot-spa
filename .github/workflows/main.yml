@@ -21,7 +21,9 @@ jobs:
           distribution: 'adopt'
 
       - name: Build package
-        run: gradle :spring-boot-starter-spa:build
+        run: |
+          gradle :spring-boot-starter-spa:build
+          gradle :spring-boot-spa-devserver:build
 
       - name: Publish Library
         run: |
