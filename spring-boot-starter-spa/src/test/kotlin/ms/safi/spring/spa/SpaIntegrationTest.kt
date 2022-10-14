@@ -28,6 +28,20 @@ abstract class SpaIntegrationTest {
     private lateinit var webTestClient: WebTestClient
 
     @Test
+    fun `returns index html for root path`(@TempFileBuilder file: FileBuilder) {
+        file("static/index.html", """I'm a sample index.html""")
+
+        webTestClient
+            .get()
+            .uri("/")
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<String>()
+            .isEqualTo("""I'm a sample index.html""")
+    }
+
+    @Test
     fun `returns index html for unknown paths`(@TempFileBuilder file: FileBuilder) {
         file("static/index.html", """I'm a sample index.html""")
 
@@ -120,7 +134,7 @@ abstract class SpaIntegrationTest {
 
         webTestClient
             .get()
-            .uri("/index.html")
+            .uri("/")
             .exchange()
             .expectStatus()
             .isOk
@@ -130,11 +144,11 @@ abstract class SpaIntegrationTest {
 
     @Test
     fun `includes cache-control headers`(@TempFileBuilder file: FileBuilder) {
-        val mainJs = file("static/js/main.js", """I'm a sample JS file""")
+        val mainJs = file("static/index.html", """I'm a sample HTML file""")
 
         webTestClient
             .get()
-            .uri("/js/main.js")
+            .uri("/")
             .exchange()
             .expectStatus()
             .isOk
