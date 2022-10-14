@@ -3,11 +3,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
-    kotlin("jvm")
-    kotlin("plugin.spring")
+    id("org.springframework.boot") version "2.7.4"
+    id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.spring") version "1.6.21"
     id("com.github.psxpaul.execfork") version "0.2.0"
+}
+
+repositories {
+    mavenCentral()
 }
 
 group = "ms.safi.spring"
@@ -24,8 +28,8 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation(project(":spring-boot-starter-spa"))
-    implementation(project(":spring-boot-spa-devserver"))
+    implementation("ms.safi.spring:spring-boot-starter-spa:0.0.8")
+    implementation("ms.safi.spring:spring-boot-spa-devserver:0.0.8")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
