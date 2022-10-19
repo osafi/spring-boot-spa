@@ -28,8 +28,8 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation("ms.safi.spring:spring-boot-starter-spa:0.0.8")
-    implementation("ms.safi.spring:spring-boot-spa-devserver:0.0.8")
+    implementation("ms.safi.spring:spring-boot-starter-spa:0.0.9")
+    implementation("ms.safi.spring:spring-boot-spa-devserver:0.0.9")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

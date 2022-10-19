@@ -26,8 +26,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("ms.safi.spring:spring-boot-starter-spa:0.0.8")
-    implementation("ms.safi.spring:spring-boot-spa-devserver:0.0.8")
+    implementation("ms.safi.spring:spring-boot-starter-spa:0.0.9")
+    implementation("ms.safi.spring:spring-boot-spa-devserver:0.0.9")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
