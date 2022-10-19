@@ -46,6 +46,7 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    testImplementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
     testImplementation("io.mockk:mockk:1.12.3")

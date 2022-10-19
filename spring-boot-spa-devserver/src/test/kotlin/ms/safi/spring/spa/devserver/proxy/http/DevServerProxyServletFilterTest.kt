@@ -3,15 +3,18 @@ package ms.safi.spring.spa.devserver.proxy.http
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
-//@Disabled("Using RequestMappingHandlerMapping in a filter no longer works as it did before, will need to revisit this: https://github.com/spring-projects/spring-boot/issues/28874")
 @SpringBootTest(properties = ["spa.devserver.proxy.enabled=true"])
 @AutoConfigureMockMvc
 internal class DevServerProxyServletFilterTest {
@@ -69,6 +72,30 @@ internal class DevServerProxyServletFilterTest {
 
         verify(exactly = 1) {
             httpServletRequestProxy(any(), any())
+        }
+    }
+
+    @Test
+    fun `request filtered through spring security filter chain before proxied`() {
+        mockMvc.get("/secure-route")
+            .andExpect {
+                status { isForbidden() }
+            }
+
+        verify(exactly = 0) {
+            httpServletRequestProxy(any(), any())
+        }
+    }
+
+    @TestConfiguration
+    @EnableWebSecurity
+    class TestConfig {
+        @Bean
+        fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+            return http.authorizeRequests { authConfig ->
+                authConfig.antMatchers("/secure-route").authenticated()
+                authConfig.anyRequest().permitAll()
+            }.build()
         }
     }
 }
